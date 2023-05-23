@@ -9,4 +9,5 @@ if __name__ == "__main__":
     message = np.random.randint(low=0, high=2, size=K)
     encoded_message = encode(N, K, message)
 
+    print(message)
     print(encoded_message)

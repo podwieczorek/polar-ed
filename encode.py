@@ -9,7 +9,7 @@ def encode(N, K, message):
                                          skip_header=1, usemask=True).compressed()
 
     # extracting message bits indexes from reliability sequence
-    message_indexes = reliability_sequence[K:]
+    message_indexes = reliability_sequence[N-K:]
 
     # creating input vector by inserting message on specified message indexes
     # other indexes will be set to 0 (frozen bits)
