@@ -1,13 +1,14 @@
 import numpy as np
-from encode import encode
+from polar_coding.encode import encode
+from polar_coding.decode_SC import decode
 
 if __name__ == "__main__":
-    N = 16  # codeword length
-    K = 8  # message bits
+    N = 8  # codeword length
+    K = 4  # message bits
 
     # generating random binary message of size K
-    message = np.random.randint(low=0, high=2, size=K)
+    message = np.random.randint(low=1, high=2, size=K)
     encoded_message = encode(N, K, message)
-
-    print(message)
     print(encoded_message)
+    decoded_message = decode(N, K, encoded_message)
+    print(decoded_message)
