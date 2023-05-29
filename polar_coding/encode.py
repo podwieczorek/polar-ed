@@ -6,7 +6,7 @@ def encode(N, K, message):
 
     # usecols parameter specifies which column to use 0: N=1024; 1: N=512 ... 7: N=8
     # TODO change column automatically
-    reliability_sequence = np.genfromtxt('reliability_sequence.csv', dtype=int, delimiter=';', usecols={7},
+    reliability_sequence = np.genfromtxt('reliability_sequence.csv', dtype=int, delimiter=';', usecols={6},
                                          skip_header=1, usemask=True).compressed()
 
     # extracting message bits indexes from reliability sequence

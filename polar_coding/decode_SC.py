@@ -2,23 +2,80 @@ import numpy as np
 import math
 
 
-def decode(N, K, encoded_message):
-    reliability_sequence = np.genfromtxt('reliability_sequence.csv', dtype=int, delimiter=';', usecols={7},
+def min_sum(a, b):
+    first_element = (1 - 2 * (a < 0))
+    second_element = (1 - 2 * (b < 0))
+    return first_element * second_element * np.minimum(np.abs(a), np.abs(b))
+
+
+def g_function(a, b, c):
+    return b + (1 - 2 * c) * a
+
+
+def decode(N, K, received_signal):
+    n = int(math.log2(N))
+    reliability_sequence = np.genfromtxt('reliability_sequence.csv', dtype=int, delimiter=';', usecols={6},
                                          skip_header=1, usemask=True).compressed()
     frozen_bits_indexes = reliability_sequence[:K]
+    beliefs = np.zeros((n + 1, N))
+    decoded_bits = np.zeros((n + 1, N))
+    node_state_vector = np.zeros(2 * N - 1)
 
-    u = encoded_message
+    beliefs[0, :] = received_signal  # Belief of the root node
 
-    # here starts decoding
-    sequence_len = N//2
-    tree_depth = int(math.log2(N))
-    for x in range(1, tree_depth+1, 1):
-        for i in range(0, N, 2 * sequence_len):
-            first_subchannel = u[i:i + sequence_len]
-            second_subchannel = u[i + sequence_len:i + 2 * sequence_len]
-            combined_sequence = np.concatenate([(first_subchannel + second_subchannel) % 2, second_subchannel])
-            u[i:i + 2 * sequence_len] = combined_sequence
+    node = 0
+    depth = 0
+    done = False
 
-        sequence_len //= 2
+    while done:
+        if depth == n:  # Leaf node
+            if node + 1 in frozen_bits_indexes:
+                decoded_bits[n, node] = 0
+            else:
+                decoded_bits[n, node] = 0 if beliefs[n, node] >= 0 else 1
+            if node == N - 1:
+                done = True
+            else:
+                node //= 2
+                depth -= 1
+        else:  # Non-leaf node
+            npos = 2 ** depth - 1 + node  # Position of node in node state vector
 
-    return u
+            if node_state_vector[npos] == 0:  # Step L and go to the left child
+                temp = 2 ** (n - depth)
+                incoming_beliefs = beliefs[depth, temp * node:temp * (node + 1)]
+                a = incoming_beliefs[:temp // 2]
+                b = incoming_beliefs[temp // 2:]
+                node *= 2
+                depth += 1
+                temp //= 2
+                beliefs[depth, temp * node:temp * (node + 1)] = min_sum(a, b)
+                node_state_vector[npos] = 1
+
+            elif node_state_vector[npos] == 1:  # Step R and go to the right child
+                temp = 2 ** (n - depth)
+                incoming_beliefs = beliefs[depth, temp * node:temp * (node + 1)]
+                a = incoming_beliefs[:temp // 2]
+                b = incoming_beliefs[temp // 2:]
+                incoming_beliefsode = 2 * node
+                ldepth = depth + 1
+                ltemp = temp // 2
+                decoded_bitsn = decoded_bits[ldepth, ltemp * incoming_beliefsode:ltemp * (incoming_beliefsode + 1)] 
+                node = node * 2 + 1
+                depth += 1
+                temp //= 2
+                beliefs[depth, temp * node:temp * (node + 1)] = g_function(a, b, decoded_bitsn)
+                node_state_vector[npos] = 2
+
+            else:  # Step U and go to the parent
+                temp = 2 ** (n - depth)
+                incoming_beliefsode = 2 * node
+                rnode = 2 * node + 1
+                cdepth = depth + 1
+                ctemp = temp // 2
+                decoded_bitsl = decoded_bits[cdepth, ctemp * incoming_beliefsode:ctemp * (incoming_beliefsode + 1)] 
+                decoded_bitsr = decoded_bits[cdepth, ctemp * rnode:ctemp * (rnode + 1)]  
+                decoded_bits[depth, temp * node:temp * (node + 1)] = np.concatenate([(decoded_bitsl + decoded_bitsr) % 2, decoded_bitsr])
+                node //= 2
+                depth -= 1
+    return decoded_bits
