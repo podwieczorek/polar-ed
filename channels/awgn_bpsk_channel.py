@@ -1,17 +1,18 @@
-import math
 import numpy as np
 
 
-def awgn_bpsk_channel(msg, K, N):
-    # arbitrary chosen, nest we can make snr_per_bit_db (Eb/N0 in dB) function argument
-    snr_per_bit_db = 16
-    snr_per_bit = math.pow(10, (snr_per_bit_db / 10))
-    rate = K / N
-    sigma = math.sqrt(1 / (2 * rate * snr_per_bit))
+def awgn_bpsk_channel(msg, K, N, eb_n0):
+    bpsk_symbols = 1 - 2 * msg
 
-    # BPSK
-    signal = 1 - 2 * msg
-    # Generate Gaussian noise
-    noise = sigma * np.random.randn(N)
-    # Add noise to the signal and return
-    return signal + noise
+    # Calculate noise variance based on eb_n0
+    eb_n0_lin = 10 ** (eb_n0 / 10)  # Convert eb_n0 from dB to linear scale
+    rate = K / N
+    noise_std = np.sqrt(1 /(rate * eb_n0_lin))  # Standard deviation of AWGN
+
+    # Generate AWGN noise samples
+    noise = noise_std * np.random.randn(N)
+
+    # Add noise to the transmitted symbols
+    signal = bpsk_symbols + noise
+
+    return signal

@@ -14,9 +14,9 @@ def g_function(a, b, c):
 
 def decode(N, K, received_signal):
     n = int(math.log2(N))
-    reliability_sequence = np.genfromtxt('reliability_sequence.csv', dtype=int, delimiter=';', usecols={1},
+    reliability_sequence = np.genfromtxt('reliability_sequence.csv', dtype=int, delimiter=';', usecols={2},
                                          skip_header=1, usemask=True).compressed()
-    frozen_bits_indexes = reliability_sequence[:K]
+    frozen_bits_indexes = reliability_sequence[:N-K]
     beliefs = np.zeros((n + 1, N))
     decoded_bits = np.zeros((n + 1, N), dtype=int)
     node_state_vector = np.zeros((2 * N - 1), dtype=int)
