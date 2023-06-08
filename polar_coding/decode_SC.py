@@ -14,22 +14,22 @@ def g_function(a, b, c):
 
 def decode(N, K, received_signal):
     n = int(math.log2(N))
-    reliability_sequence = np.genfromtxt('reliability_sequence.csv', dtype=int, delimiter=';', usecols={6},
+    reliability_sequence = np.genfromtxt('reliability_sequence.csv', dtype=int, delimiter=';', usecols={1},
                                          skip_header=1, usemask=True).compressed()
     frozen_bits_indexes = reliability_sequence[:K]
     beliefs = np.zeros((n + 1, N))
-    decoded_bits = np.zeros((n + 1, N))
-    node_state_vector = np.zeros(2 * N - 1)
+    decoded_bits = np.zeros((n + 1, N), dtype=int)
+    node_state_vector = np.zeros((2 * N - 1), dtype=int)
 
     beliefs[0, :] = received_signal  # Belief of the root node
-
     node = 0
     depth = 0
     done = False
 
-    while done:
+    while not done:
+
         if depth == n:  # Leaf node
-            if node + 1 in frozen_bits_indexes:
+            if node in frozen_bits_indexes:
                 decoded_bits[n, node] = 0
             else:
                 decoded_bits[n, node] = 0 if beliefs[n, node] >= 0 else 1
@@ -78,4 +78,5 @@ def decode(N, K, received_signal):
                 decoded_bits[depth, temp * node:temp * (node + 1)] = np.concatenate([(decoded_bitsl + decoded_bitsr) % 2, decoded_bitsr])
                 node //= 2
                 depth -= 1
-    return decoded_bits
+    message_indexes = reliability_sequence[N - K:]
+    return decoded_bits[n, message_indexes]
