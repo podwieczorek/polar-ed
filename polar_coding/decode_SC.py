@@ -14,7 +14,9 @@ def g_function(a, b, c):
 
 def decode(N, K, received_signal):
     n = int(math.log2(N))
-    reliability_sequence = np.genfromtxt('reliability_sequence.csv', dtype=int, delimiter=';', usecols={2},
+
+    column = 10 - n
+    reliability_sequence = np.genfromtxt('reliability_sequence.csv', dtype=int, delimiter=';', usecols={column},
                                          skip_header=1, usemask=True).compressed()
     frozen_bits_indexes = reliability_sequence[:N-K]
     beliefs = np.zeros((n + 1, N))

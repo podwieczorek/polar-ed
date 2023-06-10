@@ -1,12 +1,14 @@
 import numpy as np
 import math
+from polar_coding.helper_functions import check_for_exceptions
 
 
 def encode(N, K, message):
+    check_for_exceptions(N, K)
 
     # usecols parameter specifies which column to use 0: N=1024; 1: N=512 ... 7: N=8
-    # TODO change column automatically
-    reliability_sequence = np.genfromtxt('reliability_sequence.csv', dtype=int, delimiter=';', usecols={2},
+    column = int(10 - math.log2(N))
+    reliability_sequence = np.genfromtxt('reliability_sequence.csv', dtype=int, delimiter=';', usecols={column},
                                          skip_header=1, usemask=True).compressed()
 
     # extracting message bits indexes from reliability sequence
