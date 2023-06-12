@@ -1,4 +1,4 @@
-from polar_coding.SC_decoder_class import PolarDecoder
+from polar_coding.SC_decoder_class import PolarDecoder, NodeState
 import math
 
 
@@ -7,8 +7,9 @@ def decode(N, K, received_signal):
     decoder.beliefs[0, :] = received_signal
 
     n = int(math.log2(N))
-    node = 0
-    depth = 0
+    # depth and node can explicitly identify position of a node in the binary tree
+    node = 0    # current node index
+    depth = 0   # current depth
     done = False
 
     while not done:
@@ -24,12 +25,12 @@ def decode(N, K, received_signal):
             # node position in node state vector
             node_position = 2 ** depth - 1 + node
 
-            if decoder.node_state_vector[node_position] == 0:  # Step L and go to the left child
+            if decoder.node_state_vector[node_position] == NodeState.not_visited:  # Step L and go to the left child
                 decoder.do_step_l(node, depth, node_position)
                 node *= 2
                 depth += 1
 
-            elif decoder.node_state_vector[node_position] == 1:  # Step R and go to the right child
+            elif decoder.node_state_vector[node_position] == NodeState.after_l_step:  # Step R and go to the right child
                 decoder.do_step_r(node, depth, node_position)
                 node = node * 2 + 1
                 depth += 1
