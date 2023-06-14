@@ -1,10 +1,10 @@
 from polar_coding.helper_functions import min_sum, g_function
-from enum import Enum
+from enum import IntEnum
 import numpy as np
 import math
 
 
-class NodeState(Enum):
+class NodeState(IntEnum):
     not_visited = 0
     after_l_step = 1
     after_r_step = 2

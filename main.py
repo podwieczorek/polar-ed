@@ -7,10 +7,10 @@ from polar_coding.helper_functions import compute_fails
 
 
 if __name__ == "__main__":
-    N = 256  # codeword length
+    N = 1024  # codeword length
     K = 100  # message bits
 
-    messages = 1000
+    messages = 10000
     # eb_n0_range = [0, 0.5, 1.0 .. 9.0]
     eb_n0_range = [i / 2 for i in range(19)]
 
