@@ -27,14 +27,14 @@ send them through AWGN BPSK channel and finally decode. Graph of
 BER and FER vs E<sub>b</sub>/ N<sub>0</sub> will be shown.
 
 ## Results
-Ready graph should look like this:
+Ready graph should look like this:  
 ![](./result.png)
 
 
 ## Bibliography
 * Erdel Arikan *Channel Polarization: A Method for Constructing
 Capacity-Achieving Codes for Symmetric Binary-Input Memoryless Channels*
-* Tomasz Lejkowski, 8Implementation of a Polar Code8 (March 2022)
+* Tomasz Lejkowski, *Implementation of a Polar Code* (March 2022)
 * Pascal Giard, Claude Thibeault, Warren J. Gross *High-Speed Decoders for Polar Codes*
 * Orhan Gazi *Polar Codes. A Non-Trivial Approach to Channel Coding*
 * LDPC and Polar Codes in 5G Standard, Indian Institute of Technology in Madras
