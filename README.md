@@ -10,7 +10,7 @@
 
 ## Introduction
 Simple implementation of polar encoder and successive cancelation polar decoder.
-More information about polar codes [here](https://www.canva.com/design/DAFnqFS9VZs/cgDmy03AyVrw2ucreaql-Q/edit?utm_content=DAFnqFS9VZs&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+More information about polar codes [here](https://www.canva.com/design/DAFmZM8cIX8/JXKUtjz0re-o-VrsU-FOtA/edit?utm_content=DAFmZM8cIX8&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 and [here](https://archive.nptel.ac.in/courses/117/106/108106137/).
 ## Technologies
 * matplotlib 3.7.1
